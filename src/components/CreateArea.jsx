@@ -1,3 +1,4 @@
+import { Fab, Zoom } from "@material-ui/core";
 import React, { useState } from "react";
 
 function CreateArea(props) {
@@ -6,15 +7,20 @@ function CreateArea(props) {
     content: ""
   });
 
+  // expandするかどうかのフラグを準備する
+  const [isExpand, setIsExpand] = useState();
+
   function handleChange(event) {
     const { name, value } = event.target;
 
-    setNote(prevNote => {
+    setNote((prevNote) => {
       return {
         ...prevNote,
         [name]: value
       };
     });
+
+    setIsExpand(true);
   }
 
   function submitNote(event) {
@@ -24,6 +30,7 @@ function CreateArea(props) {
       content: ""
     });
     event.preventDefault();
+    setIsExpand(false);
   }
 
   return (
@@ -35,14 +42,22 @@ function CreateArea(props) {
           value={note.title}
           placeholder="Title"
         />
-        <textarea
-          name="content"
-          onChange={handleChange}
-          value={note.content}
-          placeholder="Take a note..."
-          rows="3"
-        />
-        <button onClick={submitNote}>Add</button>
+        {isExpand ? (
+          <div>
+            <textarea
+              name="content"
+              onChange={handleChange}
+              value={note.content}
+              placeholder="Take a note..."
+              rows={isExpand ? 3 : 1}
+            />
+            <Zoom in={true}>
+              <Fab onClick={submitNote}>Add</Fab>
+            </Zoom>
+          </div>
+        ) : (
+          ""
+        )}
       </form>
     </div>
   );
